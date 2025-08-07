@@ -1,0 +1,44 @@
+#define ll long long
+
+class Solution {
+public:
+    ll minCost(vector<int>& basket1, vector<int>& basket2) {
+        unordered_map<int, int> mp1, mp2, freq;
+        for (int x : basket1) {
+            mp1[x]++;
+            freq[x]++;
+        }
+        for (int x : basket2) {
+            mp2[x]++;
+            freq[x]++;
+        }
+
+        int mini = INT_MAX;
+        for (auto &[x, f] : freq) {
+            if (f % 2) return -1; 
+            mini = min(mini, x);
+        }
+        vector<int> res;
+
+        // Har fruit ke liye, basket1 mein kitna extra hai woh store kar rahe
+        for (auto &[x, f] : freq) {
+            int diff = mp1[x] - f / 2;
+            for (int i = 0; i < abs(diff); i++) {
+                res.push_back(x); // extra elements ko swap karna padega
+            }
+        }
+
+        // sort kar liya taaki minimal cost aaye
+        sort(res.begin(), res.end());
+
+        ll cost = 0;
+        int n = res.size();
+
+        // Half elements ko hi swap karna padega
+        for (int i = 0; i < n / 2; i++) {
+            // Direct swap ka cost ya 2 * minimum value via smallest element
+            cost += min(res[i], 2 * mini);
+        }
+        return cost;
+    }
+};
