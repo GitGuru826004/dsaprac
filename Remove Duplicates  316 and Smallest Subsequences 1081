@@ -67,6 +67,61 @@ public:
     }
 };
 
-// using rescursion
+// using rescursion but mle aa jayega 
+
+
+class Solution {
+public:
+    string result = "";
+    int n;
+    int unique_characters;
+
+    void solve(int idx, string s, string temp, unordered_set<char>& st) {
+        // Base case
+        if (idx >= n) {
+            // Agar result abhi tak empty hai, toh temp se initialize karenge
+            if (result == "")
+                result = temp;
+            
+            else if (temp.size() == unique_characters)
+                result = result > temp ? temp : result;
+
+            return;
+        }
+
+        
+        if (st.find(s[idx]) == st.end()) {
+            // Include
+            temp.push_back(s[idx]);
+            st.insert(s[idx]);
+
+            
+            solve(idx + 1, s, temp, st);
+
+            // Backtrack
+            st.erase(s[idx]);
+            temp.pop_back();
+        }
+
+        // Option 2: ignore
+        solve(idx + 1, s, temp, st);
+    }
+
+    string removeDuplicateLetters(string s) {
+        n = s.length();
+
+        unordered_set<char> st;
+        for (char &ch : s) {
+            st.insert(ch);
+        }
+
+        unique_characters = st.size(); 
+        st.clear(); // backtracking ke liye clear
+
+        solve(0, s, "", st);
+        return result;
+    }
+};
+
 
 
