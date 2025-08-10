@@ -1,0 +1,62 @@
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int n= s.length();
+        int k=p.length();
+        if(n<k) return {};
+        vector<int>res;
+        vector<int>pcount(26,0),windowcount(26,0);
+        for(char c:p) pcount[c-'a']++;
+        for(int i=0;i<k;i++)windowcount[s[i]-'a']++;
+        if(pcount==windowcount) res.push_back(0);
+        for(int i=k;i<n;i++){
+            windowcount[s[i]-'a']++;
+            windowcount[s[i-k]-'a']--;
+            if(pcount==windowcount) res.push_back(i-k+1);
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int n= s.length();
+        int k=p.length();
+        vector<int>res;
+        sort(p.begin(),p.end());
+        for(int i=0;i<=n-k;i++){
+            string temp= s.substr(i,k);
+            sort(temp.begin(),temp.end());
+            if(temp==p) res.push_back(i);
+        }
+        return res;
+    }
+};
+
+
+
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int n = s.size(), k = p.size();
+        if (n < k)
+            return {};
+        vector<int> res;
+        vector<int> pCount(26, 0), windowCount(26, 0);
+
+        for (char c : p)
+            pCount[c - 'a']++;
+
+        for (int i = 0; i <= n - k; i++) {
+            fill(windowCount.begin(), windowCount.end(), 0);
+            for (int j = i; j < i + k; j++) {
+                windowCount[s[j] - 'a']++;
+            }
+            if (windowCount == pCount)
+                res.push_back(i);
+        }
+        return res;
+    }
+};
