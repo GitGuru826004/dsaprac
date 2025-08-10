@@ -1,0 +1,102 @@
+class Solution {
+public:
+
+    // if(x>0 && (x&(x-1)==0)) return true;
+    //It’s equivalent to:
+    // if (x > 0 && (x & ((x - 1) == 0)))
+    // So for x = 16, (x - 1) == 0 is false (0), and x & 0 is 0 — so it returns false even though 16 is a power of two.
+
+    //Correct fix:
+    // You must explicitly group (x & (x - 1)):
+    // bool ispoweroftwo(int x) {
+    //return x > 0 && ((x & (x - 1)) == 0);
+    // }
+
+
+    bool ispoweroftwo(int x){
+        if (x > 0 && ((x & (x - 1)) == 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    bool reorderedPowerOf2(int n) {
+        string s = to_string(n);
+        sort(s.begin(),s.end());
+        if(s[0]!='0' && ispoweroftwo(stoi(s))) return true;
+        
+        while(next_permutation(s.begin(),s.end())){
+            if(s[0]=='0') continue;
+            if(ispoweroftwo(stoi(s))) return true;
+        }
+        return false;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+class Solution {
+public:
+    string countdigits(int x){
+        string cnt(10,0);
+        while(x>0){
+            int digit= x%10;
+            cnt[digit]++;
+            x/=10;
+        }
+        return cnt;
+    }
+    bool reorderedPowerOf2(int n) {
+        if(n==1) return true;
+        for(int i=0;i<31;i++){
+            if(countdigits(n)== countdigits(1<<i)) return true;
+        }
+        return false;
+    }
+};
+
+
+
+
+
+class Solution {
+public:
+    bool reorderedPowerOf2(int n) {
+        string s = sortDigits(n);
+
+        for(int i = 0; i<31; i++){
+            int power = 1 << i;
+            if(s == sortDigits(power)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+        string sortDigits(int num) {
+        string s = to_string(num);
+        sort(s.begin(), s.end());
+        return s;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
