@@ -1,0 +1,77 @@
+class Solution {
+public:
+    vector<int> converttobinary(int x){
+        vector<int>temp;
+        while(x>0){
+            int digit=x%2;
+            temp.push_back(digit);
+            x/=2;
+        }
+        reverse(temp.begin(),temp.end());
+        return temp;
+    }
+
+    const int MOD= 1000000007;
+    vector<int> productQueries(int n, vector<vector<int>>& queries) {
+        vector<int>res;
+        int m= queries.size();
+        vector<int>powerbin=converttobinary(n);
+        vector<int>power;
+        int a=powerbin.size();
+        for(int i=a-1;i>=0;i--){
+            if(powerbin[i]==1)power.push_back(1LL<<(a-i-1));
+        }
+
+        for(auto & query: queries){
+            int x=query[0];
+            int y=query[1];
+            long long prod=1;
+            for(int i=x;i<=y;i++){
+                prod = (prod * (power[i] % MOD)) % MOD;
+            }
+            res.push_back((int)prod);
+        }
+        return res;
+    }
+};
+
+
+
+class Solution {
+public:
+    int M = 1e9+7;
+
+    vector<int> productQueries(int n, vector<vector<int>>& queries) {
+        vector<int> powers;
+        vector<int> result;
+
+        //Build powers array
+        for(int i = 0; i < 32; i++) {
+            if((n & (1 << i)) != 0) { //ith bit is set
+                powers.push_back(1 << i);
+            }
+        }
+
+        // n & (1 << i) → bitwise AND.
+        //     Checks if n has the i-th bit set.
+        //     If non-zero → bit is 1 at that position.
+
+        //     powers.push_back(1 << i) → if the bit is set, store the corresponding power of two into powers.
+        //     This means powers will contain numbers like 1, 2, 4, 8, ... but only for bits set in n.
+
+        for(auto &query : queries) {
+            int start = query[0];
+            int end = query[1];
+
+            long product = 1;
+            for(int i = start; i <= end; i++) {
+                product = (product * powers[i]) % M;
+            }
+
+            result.push_back(product);
+        }
+
+        return result;
+
+    }
+};
