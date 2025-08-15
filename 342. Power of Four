@@ -1,0 +1,11 @@
+class Solution {
+public:
+    bool isPowerOfFour(int n) {
+        return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555);
+    }
+};
+
+
+// (n & (n - 1)) == 0 → checks if n is a power of two (only one bit set in binary).
+
+// 0x55555555 → binary pattern 010101010101... ensures that the single set bit is at an odd position (positions 0, 2, 4, …), which is true only for powers of 4.
