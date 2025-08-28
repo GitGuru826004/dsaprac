@@ -1,0 +1,147 @@
+class Solution {
+public:
+    int maxPalindromesAfterOperations(vector<string>& words) {
+        unordered_map<char,int>freq;
+        int n = words.size();
+        for(int i=0;i<n;i++){
+            for(char x:words[i]){
+                freq[x]++;
+            }
+        }
+        vector<int>temp;
+        for(int i=0;i<n;i++){
+            temp.push_back(words[i].size());
+        }
+        sort(temp.begin(),temp.end());
+        int sum=0;
+        for(auto &[key,val]:freq){
+            sum+=val/2;
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            int cnt=temp[i]/2;
+            if(sum>=cnt){
+                sum-=cnt;
+                ans++;
+            }
+        }
+        return ans;  
+    }
+};
+
+
+class Solution {
+public:
+    int maxPalindromesAfterOperations(vector<string>& words) {
+        unordered_map<char,int> freq;
+        int n = words.size();
+        for (auto &w : words) {
+            for (char x : w) freq[x]++;
+        }
+
+        vector<int> temp;
+        for (auto &w : words) temp.push_back(w.size());
+        sort(temp.begin(), temp.end());
+
+        int pairs = 0, singles = 0;
+        for (auto &[ch, val] : freq) {
+            pairs += val / 2;
+            singles += val % 2;
+        }
+
+        int ans = 0;
+        for (int len : temp) {
+            int needPairs = len / 2;
+            if (pairs >= needPairs) {
+                pairs -= needPairs;
+                // if odd length, we’ll need one single, 
+                // but if no single left, we can break one pair
+                if (len % 2 == 1) {
+                    if (singles > 0) singles--;
+                    else if (pairs > 0) pairs--, singles++; // break a pair into 2 singles, use 1
+                }
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+class Solution {
+public:
+    int maxPalindromesAfterOperations(vector<string>& words) {
+        
+        int n = words.size();
+        vector<int> sizes(n);
+        vector<int> count(26, 0);
+        for(int i=0; i<n; i++){
+            string word = words[i];
+            sizes[i] = word.size();
+            for(char c: word){
+                count[int(c - 'a')]++;
+            }
+        }
+        int total = 0;
+        int extra = 0;
+        int ans = 0;
+        for(int cnt: count){
+            total += cnt/2;
+            extra += cnt%2;
+        }
+        sort(sizes.begin(), sizes.end());
+        for(int i=0; i<n; i++){
+            int sz = sizes[i];
+            if(total >= sz/2){
+                if(sz%2 == 0){
+                    ans++;
+                    total-=sz/2;
+                }
+                else if(sz%2){
+                    if(extra){
+                        ans++;
+                        total -= sz/2;
+                        extra--;
+                    }
+                    else if(total > sz/2){
+                        ans++;
+                        extra++;
+                        total -= sz/2+1;
+                    }       
+                }
+            }
+            else
+                break;
+        }
+        return ans;
+    }
+};
+
+
+class Solution {
+public:
+    int maxPalindromesAfterOperations(vector<string>& words) {
+        int n = words.size();
+        vector<int> sizes(n), count(26, 0);
+
+        for (int i = 0; i < n; i++) {
+            sizes[i] = words[i].size();
+            for (char c : words[i]) count[c - 'a']++;
+        }
+
+        int totalPairs = 0;
+        for (int cnt : count) totalPairs += cnt / 2;
+
+        sort(sizes.begin(), sizes.end());
+        int ans = 0;
+        for (int sz : sizes) {
+            int need = sz / 2;  // how many pairs needed
+            if (totalPairs >= need) {
+                totalPairs -= need;
+                ans++;
+            } else break;
+        }
+        return ans;
+    }
+};
