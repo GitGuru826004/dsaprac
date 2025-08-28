@@ -1,0 +1,52 @@
+class Solution {
+public:
+    bool partitionArray(vector<int>& nums, int k) {
+        unordered_map<int,int>freq;
+        int n = nums.size();
+        if(n%k)return false;
+        for(int x:nums) freq[x]++;
+        int maxi=INT_MIN;
+        for(auto &[key,val]:freq){
+           maxi=max(maxi,val);
+        }
+        int grp=n/k;
+        if(maxi>grp)return false;
+        return true;
+    }
+};
+
+code for making such partition not just check it
+
+class Solution {
+public:
+    vector<vector<int>> partitionArray(vector<int>& nums, int k) {
+        int n = nums.size();
+        // Step 1: Check feasibility
+        if (n % k != 0) return {}; 
+        int groups = n / k;
+
+        unordered_map<int,int> freq;
+        for (int x : nums) freq[x]++;
+        int maxi = 0;
+        for (auto &p : freq) maxi = max(maxi, p.second);
+        if (maxi > groups) return {}; // impossible
+
+yahan tak same 
+
+vector<vector<int>>res(groups);
+int g=0; // curr grp index
+for(auto &[key,val]:freq){
+  for(int i=0;i<val;i++){
+  res[g].push_back(key);
+  g=(g+1)%groups;
+}}
+
+
+
+
+
+
+
+
+
+
