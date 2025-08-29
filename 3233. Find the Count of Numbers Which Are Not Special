@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<bool> sieve(int n) {
+        vector<bool> isPrime(n + 1, true);
+        isPrime[0] = isPrime[1] = false;
+
+        for (int i = 2; 1LL * i * i <= n; i++) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= n; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+        return isPrime;
+    }
+
+    int nonSpecialCount(int l, int r) {
+        int total = r - l + 1;
+        int special = 0;
+
+        int limit = sqrt(r) + 1;
+        vector<bool> isPrime = sieve(limit);
+
+        for (int p = 2; p <= limit; p++) {
+            if (isPrime[p]) {
+                long long sq = 1LL * p * p;
+                if (sq >= l && sq <= r) {
+                    special++;
+                }
+            }
+        }
+
+        return total - special;
+    }
+};
+
+
+
+class Solution {
+public:
+    bool isPrime(int n) {
+        if (n < 2) return false;
+        if (n % 2 == 0) return n == 2;
+        for (int i = 3; 1LL * i * i <= n; i += 2) {
+            if (n % i == 0) return false;
+        }
+        return true;
+    }
+
+    int nonSpecialCount(int l, int r) {
+        int sqrt1 = ceil(sqrt(l));  
+        int sqrt2 = floor(sqrt(r)); 
+        int cnt = 0;
+
+        for (int i = sqrt1; i <= sqrt2; i++) {
+            if (isPrime(i)) cnt++;
+        }
+
+        return (r - l + 1) - cnt;
+    }
+};
