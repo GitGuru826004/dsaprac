@@ -1,0 +1,41 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.')continue;
+                char val=board[i][j];
+                for(int r=0;r<9;r++) if(board[r][j]==val && r!=i)return false;
+                for(int c=0;c<9;c++) if(board[i][c]==val && c!=j)return false;
+                int br= (i/3)*3,bc= (j/3)*3;
+                for(int r=0;r<3;r++){
+                    for(int c=0;c<3;c++){
+                        if(board[br+r][bc+c]==val && br+r!=i && bc+c!=j)return false;
+                    }
+                } 
+            }
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        unordered_set<char>rows[9];
+        unordered_set<char>cols[9];
+        unordered_set<char>boxs[9];
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.')continue;
+                char val=board[i][j];
+                int bidx= (i/3)*3 + (j/3);
+                if(rows[i].count(val) ||cols[j].count(val) || boxs[bidx].count(val))return false;
+                rows[i].insert(val);
+                cols[j].insert(val);
+                boxs[bidx].insert(val); 
+            }
+        }
+        return true;
+    }
+};
