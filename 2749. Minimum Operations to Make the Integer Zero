@@ -14,3 +14,24 @@ using ll = long long;
         return -1;
     }
 };
+
+
+
+class Solution {
+public:
+using ll = long long;
+    int makeTheIntegerZero(int num1, int num2) {
+        //3 iteration likh lo, usse ueh result aa jayega
+        // num1-t*num2= 2^i1+2^i2+...2^it
+        //now iterate on t;
+        int t=0;
+        while(true){
+            ll lhs = 1LL * num1 - 1LL * t * num2;
+            if(lhs<0) return -1;
+            int bits = __builtin_popcountll(lhs);  
+            if(bits<=t && lhs>=t)return t; // lhs=9 mein min 2-> 2^3 + 2^0 , max 9 -> 9 baar 2^0;
+            t++;
+        }
+        return -1;
+    }
+};
