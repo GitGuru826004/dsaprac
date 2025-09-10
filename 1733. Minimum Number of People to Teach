@@ -1,0 +1,88 @@
+class Solution {
+public:
+    bool hascommon(const vector<int>& temp1,const vector<int>& temp2){
+        int n = temp1.size();
+        int m = temp2.size();
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(temp1[i]==temp2[j])return true;
+            }
+        }
+        return false;
+    }
+    int minteach(unordered_map<int,vector<int>>&mp,vector<vector<int>>& friendships,int lang,unordered_set<int>& needteach){
+        int cnt=0;
+        for(int person:needteach){
+            bool know=false;
+            for(int l:mp[person]){
+                if(l==lang){
+                    know=true;
+                    break;
+                }
+            }
+            if(!know)cnt++;
+        }
+        return cnt;
+    }
+    int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+        unordered_map<int,vector<int>>mp;
+        for(int i=0;i<languages.size();i++) mp[i+1]=languages[i];
+        unordered_set<int>needteach;
+        for(auto &friends:friendships){
+            int x= friends[0];
+            int y = friends[1];
+            if(!hascommon(mp[x],mp[y])){
+                needteach.insert(x);
+                needteach.insert(y);
+            }
+        }
+        int ans=INT_MAX;
+        for(int i=1;i<=n;i++) ans=min(ans,minteach(mp,friendships,i,needteach));
+        return ans==INT_MAX?0:ans;
+    }
+};
+
+
+
+
+class Solution {
+public:
+    bool hascommon(const vector<int>& temp1,const vector<int>& temp2){
+        int n = temp1.size();
+        int m = temp2.size();
+        unordered_set<int>tempset;
+        for(int i=0;i<n;i++)tempset.insert(temp1[i]);
+        for(int j=0;j<m;j++)if(tempset.count(temp2[j]))return true;
+        return false;
+    }
+    int minteach(unordered_map<int,vector<int>>&mp,vector<vector<int>>& friendships,int lang,unordered_set<int>& needteach){
+        int cnt=0;
+        for(int person:needteach){
+            bool know=false;
+            for(int l:mp[person]){
+                if(l==lang){
+                    know=true;
+                    break;
+                }
+            }
+            if(!know)cnt++;
+        }
+        return cnt;
+    }
+    int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+        unordered_map<int,vector<int>>mp;
+        for(int i=0;i<languages.size();i++) mp[i+1]=languages[i];
+        unordered_set<int>needteach;
+        for(auto &friends:friendships){
+            int x= friends[0];
+            int y = friends[1];
+            if(!hascommon(mp[x],mp[y])){
+                needteach.insert(x);
+                needteach.insert(y);
+            }
+        }
+        int ans=INT_MAX;
+        for(int i=1;i<=n;i++) ans=min(ans,minteach(mp,friendships,i,needteach));
+        return ans==INT_MAX?0:ans;
+    }
+};
