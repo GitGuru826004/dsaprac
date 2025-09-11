@@ -1,0 +1,44 @@
+class Solution {
+public:
+    string frequencySort(string s) {
+        unordered_map<char,int>mp;
+        for(char ch:s){
+            mp[ch]++;
+        }
+
+        vector<pair<char,int>>freq(mp.begin(),mp.end());
+        sort(freq.begin(),freq.end(),[](auto &a,auto &b){
+            return a.second>b.second;
+        });
+        
+        string ans="";
+
+        for(auto &[character,number]:freq){
+            ans+=string(number,character);
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    string frequencySort(string s) {
+        unordered_map<char,int>mp;
+        for(char ch:s){
+            mp[ch]++;
+        }
+
+        priority_queue<pair<int,char>>pq;
+        for(auto &[ch,freq]: mp){
+            pq.push({freq,ch});
+        }
+        
+        string ans="";
+        while(!pq.empty()){
+            auto[cnt,letter]= pq.top();
+            pq.pop();
+            ans+=string(cnt,letter);
+        }
+        return ans;
+    }
+};
