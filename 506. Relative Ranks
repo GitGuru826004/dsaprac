@@ -1,0 +1,69 @@
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        vector<pair<int,int>>temp;
+        int n = score.size();
+        for(int i=0;i<score.size();i++)temp.push_back({score[i],i});
+        sort(temp.rbegin(),temp.rend());
+        vector<string>res(n);
+        for(int i=0;i<n;i++){
+            if(i==0)res[temp[i].second]="Gold Medal";
+            else if(i==1)res[temp[i].second]="Silver Medal";
+            else if(i==2)res[temp[i].second]="Bronze Medal";
+            else res[temp[i].second]=to_string(i+1);
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    typedef pair<int,int> P;
+    vector<string> findRelativeRanks(vector<int>& score) {
+        int n = score.size();
+        priority_queue<P>pq;
+        for(int i=0;i<n;i++)pq.push({score[i],i});
+        vector<string>res(n);
+        int i=1;
+        while(!pq.empty()){
+            auto p=pq.top();
+            pq.pop();
+            if(i==1)res[p.second]="Gold Medal";
+            else if(i==2)res[p.second]="Silver Medal";
+            else if(i==3)res[p.second]="Bronze Medal";
+            else res[p.second]=to_string(i);
+            i++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        int n = score.size();
+        int maxscore = *max_element(score.begin(), score.end());
+        vector<vector<int>> bucket(maxscore + 1);
+        for (int i = 0; i < n; i++) {
+            bucket[score[i]].push_back(i);
+        }
+        vector<string> res(n);
+        int rank = 1;
+
+        // go from highest score to lowest
+        for (int s = maxscore; s >= 0; s--) {
+            for (int idx : bucket[s]) { // all players with score s
+                if (rank == 1) res[idx] = "Gold Medal";
+                else if (rank == 2) res[idx] = "Silver Medal";
+                else if (rank == 3) res[idx] = "Bronze Medal";
+                else res[idx] = to_string(rank);
+                rank++;
+            }
+        }
+        return res;
+    }
+};
+
+
+
