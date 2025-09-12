@@ -1,0 +1,18 @@
+class Solution {
+public:
+    string decodeAtIndex(string s, int k) {
+        long long size=0;
+        for (char c : s) {
+            if (isalpha(c)) size++;
+            else size *= (c - '0');
+        }
+        int n = s.length();
+        for(auto i=n-1;i>=0;i--){
+            k=k%size;
+            if(k==0 && isalpha(s[i]))return string(1,s[i]);
+            if(isalpha(s[i]))size--;
+            if(!isalpha(s[i]))size /=(s[i]-'0');
+        }
+        return "";
+    }
+};
