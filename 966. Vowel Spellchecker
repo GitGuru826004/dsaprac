@@ -1,0 +1,133 @@
+class Solution {
+public:
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        unordered_set<string> st(wordlist.begin(), wordlist.end());
+        unordered_map<string,string> alllower;
+        for(string s:wordlist){
+            string temp = s;
+            transform(temp.begin(), temp.end(), temp.begin(), [](char c) { return tolower(c); });
+            if(!alllower.count(temp)) alllower[temp]=s;
+        }
+        unordered_map<string,string> vowel;
+        for(string s:wordlist){
+            string temp = s;
+            transform(temp.begin(), temp.end(), temp.begin(), [](char c) {
+                char lower = tolower(c);
+                if (lower=='a' || lower=='e' || lower=='i' || lower=='o' || lower=='u')
+                    return '*';
+                return lower;
+            });
+            if(!vowel.count(temp)) vowel[temp]=s;
+        }
+
+        vector<string> res;
+        for(auto &s:queries){
+            if(st.count(s)) {
+                res.push_back(s); // first
+            } else {
+                string temp1 = s;
+                transform(temp1.begin(), temp1.end(), temp1.begin(), [](char c) { return tolower(c); });
+                if(alllower.count(temp1)) {
+                    res.push_back(alllower[temp1]); // second
+                } else {
+                    string temp2 = s;
+                    transform(temp2.begin(), temp2.end(), temp2.begin(), [](char c) {
+                        char lower = tolower(c);
+                        if (lower=='a' || lower=='e' || lower=='i' || lower=='o' || lower=='u')
+                            return '*';
+                        return lower;
+                    });
+                    if(vowel.count(temp2)) {
+                        res.push_back(vowel[temp2]);
+                    } else {
+                        res.push_back("");
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
+MIK
+
+
+class Solution {
+public:
+    unordered_set<string> exactWords;          // stores original words
+    unordered_map<string, string> caseMap;     // lowercase : original word
+    unordered_map<string, string> vowelMap;    // masked vowels : original word
+    
+    string toLower(const string& s) {
+        string res = s;
+        for (char& c : res) {
+            c = tolower(c);
+        }
+        return res;
+    }
+
+    string maskVowels(const string& s) {
+        string res = s;
+        for (char& c : res) {
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                c = '*';
+            }
+        }
+        return res;
+    }
+
+    string checkForMatch(const string& query) {
+        // Exact match
+        if (exactWords.count(query)) {
+            return query;
+        }
+
+        // Case error match
+        string lowerQuery = toLower(query);
+        if (caseMap.count(lowerQuery)) {
+            return caseMap[lowerQuery];
+        }
+
+        // Vowel error match
+        string maskedQuery = maskVowels(lowerQuery);
+        if (vowelMap.count(maskedQuery)) {
+            return vowelMap[maskedQuery];
+        }
+
+        // 4. No match
+        return "";
+    }
+
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        exactWords.clear();
+        caseMap.clear();
+        vowelMap.clear();
+
+        for (string word : wordlist) {
+            exactWords.insert(word);
+
+            string lowerWord = toLower(word);
+            if (caseMap.find(lowerWord) == caseMap.end()) { //Add only 1st occurrence
+                caseMap[lowerWord] = word;
+            }
+
+            string maskedWord = maskVowels(lowerWord);
+            if (vowelMap.find(maskedWord) == vowelMap.end()) { //Add only 1st occurrence
+                vowelMap[maskedWord] = word;
+            }
+        }
+
+        vector<string> result;
+        for (string query : queries) {
+            result.push_back(checkForMatch(query));
+        }
+        return result;
+    }
+};
+
+
+
+
