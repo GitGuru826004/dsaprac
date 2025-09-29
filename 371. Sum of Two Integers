@@ -1,0 +1,11 @@
+class Solution {
+public:
+    int getSum(int a, int b) { 
+        while (b != 0) { //jabtak carry 0 nahi ho jaaye
+            unsigned carry = (unsigned)(a & b) << 1; // carry , unsigned for -ve nos
+            a = a ^ b; // sum without carry
+            b = carry; // assign carry
+        }
+        return a;
+    }
+};
