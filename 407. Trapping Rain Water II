@@ -1,0 +1,44 @@
+class Solution {
+public:
+    typedef pair<int, pair<int, int>> P;
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        // basically sabse pehlew min boundary points chahiye along with their
+        // coordinates so min heap like dijkistra
+        int res=0;
+        int m = heightMap.size();
+        int n = heightMap[0].size();
+        priority_queue<P, vector<P>, greater<>> pq;
+        vector<vector<bool>>vis(m,vector<bool>(n,false));
+        for (int j = 0; j < n; j++) {                   
+            pq.push({heightMap[0][j], {0, j}});        
+            pq.push({heightMap[m - 1][j], {m - 1, j}}); 
+            vis[0][j] = vis[m-1][j] = true;
+        }
+
+        for (int i = 0; i < m; i++) {                  
+            pq.push({heightMap[i][0], {i, 0}});       
+            pq.push({heightMap[i][n - 1], {i, n - 1}});
+            vis[i][0] = vis[i][n-1] = true;
+        }
+
+        vector<pair<int,int>>dirs={{1,0},{-1,0},{0,-1},{0,1}};
+        while(!pq.empty()){
+            auto x= pq.top();
+            pq.pop();
+            int height=x.first;
+            int xcoord=x.second.first;
+            int ycoord=x.second.second;
+
+            for(auto &[dx,dy]:dirs){
+                int nx= xcoord+dx;
+                int ny= ycoord+dy;
+                if(nx >= 0 && nx < m && ny >= 0 && ny < n && !vis[nx][ny]){
+                    vis[nx][ny]=true;
+                    res+= max(0,height-heightMap[nx][ny]);
+                    pq.push({max(height,heightMap[nx][ny]),{nx,ny}});
+                }
+            }
+        }
+        return res;
+    }
+};
