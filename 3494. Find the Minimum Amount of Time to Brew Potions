@@ -1,0 +1,25 @@
+class Solution {
+public:
+    long long minTime(vector<int>& skill, vector<int>& mana) {
+        //mana wala array yaani potion
+        //skill wala array yaani wizard
+        // max of (prev portion finish time && previous wizrd finish time , l-1, up-1)
+        // but timing must be synchronized so finishtime[i-1]=finishtime[i]-m[i]*s[i]; backtrack
+        //pehle har ki value blindly max(prev[i]+m[i]*s[i], upar wale se+m[i]*s[i]); thne correct using backtrack
+        int n =skill.size();
+        int m=mana.size();
+        vector<long long>res(n);
+
+        for(int j=0;j<m;j++){
+            res[0]+=mana[j]*skill[0];
+            for(int i=1;i<n;i++){
+                res[i]=1LL*skill[i]*mana[j]+max(res[i-1],res[i]);
+            }
+            //now backtrack and correct
+            for(int i=n-1;i>0;i--){
+                res[i-1]=res[i]-1LL*mana[j]*skill[i];
+            }
+        }
+        return res[n-1];
+    }
+};
