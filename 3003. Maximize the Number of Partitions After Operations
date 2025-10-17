@@ -1,0 +1,170 @@
+class Solution {
+public:
+    int n;
+    string S;
+    int K;
+    int solve(int idx, int uniquechar, bool canchange) {
+        if(idx==n)return 1; //last wala 
+        int charidx = S[idx] - 'a';
+        // set this charidx
+        int updateduniquechar = uniquechar | (1 << charidx);
+        int uniquecharcount = __builtin_popcount(updateduniquechar);
+        int res;
+        if (uniquecharcount > K) {
+            res = 1 + solve(idx + 1, (1 << charidx), canchange);
+        } else {
+            res = solve(idx + 1, updateduniquechar, canchange);
+        }
+
+        if (canchange) {
+            for (int newcharidx = 0; newcharidx < 26; newcharidx++) {
+                int newsetchar = uniquechar | (1 << newcharidx);
+                int newsetcharcount = __builtin_popcount(newsetchar);
+                if (newsetcharcount > K) {
+                    res = max(res,1 + solve(idx + 1, (1 << newcharidx), !canchange));
+                } else {
+                    res = max(res,solve(idx + 1, newsetchar, !canchange));
+                }
+            }
+        }
+        return res;
+    }
+    int maxPartitionsAfterOperations(string s, int k) {
+        // s = "aabaab", k = 2 , poora strinng lelo so ans=1 but ans is 3 how?
+        // First, you are allowed to change at most one index in s to another
+        // lowercase English letter. so make it aabcab , now aab ca b so ans=3;
+
+        // har idx par 26 possibiliy  to change (25+no change)
+
+        // un9ique char, idx, canchange?  -> 0,0,true
+        // for counting unique char, eithrt use set ot one other way(digit bit
+        // manipulation) suppose c hai so c-'a'=2 so set 2nd bit (total 26 bits)
+        // now if total setbits /26 >=k partition+=1;
+        n=s.length();
+        S=s;
+        K=k;
+        return solve(0,0,true);
+
+    }
+};
+
+
+
+class Solution {
+public:
+// yeh possible mnahi hoga as uniquechar ki amx valkue is 1111*26 times which we caannot store in a vector
+    int n;
+    string S;
+    int K;
+    vector<vector<vector<int>>>dp;
+    int solve(int idx, int uniquechar, bool canchange) {
+        if(idx==n)return 1; //last wala 
+        if(dp[idx][uniquechar][canchange]!=-1)return dp[idx][uniquechar][canchange];
+        int charidx = S[idx] - 'a';
+        // set this charidx
+        int updateduniquechar = uniquechar | (1 << charidx);
+        int uniquecharcount = __builtin_popcount(updateduniquechar);
+        int res;
+        if (uniquecharcount > K) {
+            res = 1 + solve(idx + 1, (1 << charidx), canchange);
+        } else {
+            res = solve(idx + 1, updateduniquechar, canchange);
+        }
+
+        if (canchange) {
+            for (int newcharidx = 0; newcharidx < 26; newcharidx++) {
+                int newsetchar = uniquechar | (1 << newcharidx);
+                int newsetcharcount = __builtin_popcount(newsetchar);
+                if (newsetcharcount > K) {
+                    res = max(res,1 + solve(idx + 1, (1 << newcharidx), !canchange));
+                } else {
+                    res = max(res,solve(idx + 1, newsetchar, !canchange));
+                }
+            }
+        }
+        return dp[idx][uniquechar][canchange] =res;
+    }
+    int maxPartitionsAfterOperations(string s, int k) {
+        // s = "aabaab", k = 2 , poora strinng lelo so ans=1 but ans is 3 how?
+        // First, you are allowed to change at most one index in s to another
+        // lowercase English letter. so make it aabcab , now aab ca b so ans=3;
+
+        // har idx par 26 possibiliy  to change (25+no change)
+
+        // un9ique char, idx, canchange?  -> 0,0,true
+        // for counting unique char, eithrt use set ot one other way(digit bit
+        // manipulation) suppose c hai so c-'a'=2 so set 2nd bit (total 26 bits)
+        // now if total setbits /26 >=k partition+=1;
+        n=s.length();
+        S=s;
+        K=k;
+        dp.resize(n+1,vector<vector<int>>(27,vector<int>(2,-1)));
+        return solve(0,0,true);
+
+    }
+};
+
+
+
+class Solution {
+public:
+// bit memiozation 
+//right se string ka first bit cahhiye for canchange 
+// then 26 for unique
+//then uske baad idx store 
+// yrh total jo number banega wo unique hoga so usko store lkar lenge in map
+    int n;
+    string S;
+    int K;
+    unordered_map<long long,int>dp;
+    int solve(long long idx, int uniquechar, bool canchange) {
+        if(idx==n)return 1; //last wala 
+        long long key= (idx<<27) | (uniquechar<<1) | (canchange);
+        if(dp.count(key))return dp[key];
+        int charidx = S[idx] - 'a';
+        // set this charidx
+        int updateduniquechar = uniquechar | (1 << charidx);
+        int uniquecharcount = __builtin_popcount(updateduniquechar);
+        int res;
+        if (uniquecharcount > K) {
+            res = 1 + solve(idx + 1, (1 << charidx), canchange);
+        } else {
+            res = solve(idx + 1, updateduniquechar, canchange);
+        }
+
+        if (canchange) {
+            for (int newcharidx = 0; newcharidx < 26; newcharidx++) {
+                int newsetchar = uniquechar | (1 << newcharidx);
+                int newsetcharcount = __builtin_popcount(newsetchar);
+                if (newsetcharcount > K) {
+                    res = max(res,1 + solve(idx + 1, (1 << newcharidx), !canchange));
+                } else {
+                    res = max(res,solve(idx + 1, newsetchar, !canchange));
+                }
+            }
+        }
+        return dp[key] =res;
+    }
+    int maxPartitionsAfterOperations(string s, int k) {
+        // s = "aabaab", k = 2 , poora strinng lelo so ans=1 but ans is 3 how?
+        // First, you are allowed to change at most one index in s to another
+        // lowercase English letter. so make it aabcab , now aab ca b so ans=3;
+
+        // har idx par 26 possibiliy  to change (25+no change)
+
+        // un9ique char, idx, canchange?  -> 0,0,true
+        // for counting unique char, eithrt use set ot one other way(digit bit
+        // manipulation) suppose c hai so c-'a'=2 so set 2nd bit (total 26 bits)
+        // now if total setbits /26 >=k partition+=1;
+        n=s.length();
+        S=s;
+        K=k;
+        return solve(0,0,true);
+
+    }
+};
+
+
+
+
+
