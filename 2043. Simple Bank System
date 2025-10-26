@@ -1,0 +1,51 @@
+class Bank {
+public:
+    vector<long long> balance; // ye bhi balance 
+    int n;
+
+    // You have a class member variable and a constructor parameter with the same name — both are called balance.
+    Bank(vector<long long>& balance) { //ye bhi balance
+    //Now, inside the constructor, when you just say balance,
+    //C++ will assume you mean the parameter, not the member variable — because of name shadowing.
+    //So to tell the compiler:
+    //“Hey, I mean the object’s balance, not the parameter one.”
+    //you use this->balance.
+    //Every object in C++ has a hidden pointer called this that points to itself.
+    //this->balance means “the balance that belongs to this object.”
+    //this->balance = balance; means:
+    //“Take the balance passed into the constructor (the argument) and assign it to the balance vector that belongs to this object.”
+    //If your parameter had a different name, say:
+    //Bank(vector<long long>& bal) {
+    //    balance = bal;
+    //} Then you don’t need this->, because there’s no name conflict.
+        n=balance.size();
+        this->balance=balance;
+    }
+    
+    bool transfer(int account1, int account2, long long money) {
+        if(account1>n || account2>n || balance[account1-1]<money )return false;
+        balance[account1-1]-=money;
+        balance[account2-1]+=money;
+        return true;
+    }
+    
+    bool deposit(int account, long long money) {
+        if(account>n)return false;
+        balance[account-1]+=money;
+        return true;
+    }
+    
+    bool withdraw(int account, long long money) {
+        if(account>n || balance[account-1]<money)return false;
+        balance[account-1]-=money;
+        return true;
+    }
+};
+
+/**
+ * Your Bank object will be instantiated and called as such:
+ * Bank* obj = new Bank(balance);
+ * bool param_1 = obj->transfer(account1,account2,money);
+ * bool param_2 = obj->deposit(account,money);
+ * bool param_3 = obj->withdraw(account,money);
+ */
