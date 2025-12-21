@@ -1,0 +1,116 @@
+#include<iostream>
+#include <bits/stdc++.h>
+using namespace std;
+// removed: #define int long long
+#define fr(i, a, b) for(int i = a; i < b; i++)
+#define mii map<int,int>
+#define mci map<char,int>
+#define um unordered_map
+#define umii unordered_map<int,int>
+#define umci unordered_map<char,int>
+#define pb push_back
+#define vi vector<int>
+#define vc vector<char>
+#define pii pair<int,int>
+#define vpi vector<pii>
+#define st string
+#define ff first
+#define ss second
+#define sort_vec(v) sort(v.begin(),v.end())
+#define rev_vec(v) reverse(v.begin(),v.end())
+#define max_vec(v) *max_element(v.begin(),v.end())
+#define min_vec(v) *min_element(v.begin(),v.end())
+const int REM=998244353;
+#define endl "\n"
+
+#define Yes cout<<"Yes\n"
+#define No cout<<"No\n"
+#define YES cout<<"YES\n"
+#define NO cout<<"NO\n"
+#define nl cout<<"\n"
+#define ANS cout<<ans;nl;
+#define scanv(a) for(int i=0;i<a.size();i++) cin>>a[i];
+#define printv(a) for(int i=0;i<a.size();i++) cout<<a[i]<<" ";nl;
+
+int binary_exp(int n,int x){
+    if(x==0) return 1;
+    else if(x%2==0) return binary_exp(n*n,x/2);
+    else return n*binary_exp(n*n,x/2);
+}
+int fact(int n){
+    if(n==1) return 1;
+    else return n*fact(n-1);
+}
+int sum_vec(vi v){
+    int s=0;
+    for(int i=0;i<v.size();i++) s+=v[i];
+    return s;
+}
+vi prefix_array(vi v){
+    vi s(v.size());
+    s[0]=v[0];
+    for(int i=1;i<v.size();i++) s[i]=s[i-1]+v[i];
+    return s;
+}
+int digitcount(int num) { return floor(log10(num) + 1); }
+vi tobinary(int n) { vi v; while(n!=0){v.pb(n%2);n/=2;} rev_vec(v); return v;}
+
+vi sievespf(int n){
+    vi spf(n+1);
+    for (int i=1;i<=n;i++)spf[i]=i;
+    for(int i=2;i*i<=n;i++){
+        if(spf[i]==i){
+            for(int j=i*i;j<=n;j+=i){
+                if(spf[j]==j)spf[j]=i;
+            }
+        }
+    }
+    return spf;
+}
+
+mii primefactorization(int n,vi &spf){
+    mii freq;
+    while(n > 1 && n < spf.size()){
+        freq[spf[n]]++;
+        n /= spf[n];
+    }
+    for (int i = 2; i * i <= n; ++i) {
+        while (n % i == 0) {
+            freq[i]++;
+            n /= i;
+        }
+    }
+    if (n > 1) freq[n]++;
+    return freq;
+}
+
+// *****************************SOLUTION*****************************
+
+class Solution {
+public:
+    int minSwaps(vector<int>& nums, vector<int>& forbidden) {
+        int n=nums.size();
+        mii numfreq;
+        mii forfreq;
+        mii bad_cnt;
+        int k=0;
+        for(int x:forbidden)forfreq[x]++;
+        fr(i,0,n){
+            numfreq[nums[i]]++;
+            if(nums[i]==forbidden[i]){
+                k++;
+                bad_cnt[nums[i]]++;
+            }
+        }
+        for(auto &[val,cnt]:numfreq){
+            if(cnt+forfreq[val]>n)return -1;
+        }
+        if(k==0)return 0;
+        int maxi=0;
+        for(auto & [val, cnt] : bad_cnt) {
+            maxi = max(maxi, cnt);
+        }
+        return max(maxi, (k + 1) / 2);
+
+    }
+};
