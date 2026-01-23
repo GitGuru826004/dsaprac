@@ -1,0 +1,126 @@
+class Solution {
+public:
+    int m;
+    int n;
+
+    bool ok(int mid,vector<vector<int>>& dungeon,int i, int j){
+        if(i>=m || j>=n)return false;
+        mid+=dungeon[i][j];
+        if(mid<=0)return false;
+        if(i==m-1 && j==n-1)return true;
+        return ok(mid,dungeon,i+1,j)|| ok(mid,dungeon,i,j+1);
+    }
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        m=dungeon.size();
+        n=dungeon[0].size();
+        int lo=1;
+        int hi=1e8;  //200*200*1000 4*1e7
+        int ans=1;
+        while(lo<=hi){
+            int mid=lo+(hi-lo)/2;
+            if(ok(mid,dungeon,0,0)){
+                ans=mid;
+                hi=mid-1;
+            }else lo=mid+1;
+        }
+        return ans;
+    }
+};
+
+
+
+
+class Solution {
+public:
+    int m;
+    int n;
+    vector<vector<int>>dp; // stores max remaining health seen at (i,j) for current mid
+
+    bool ok(int mid,vector<vector<int>>& dungeon,int i, int j){
+        if(i>=m || j>=n)return false;
+        mid+=dungeon[i][j];
+        if(mid<=0)return false;
+        if(mid<=dp[i][j])return false; //imp
+        dp[i][j]=mid; //imp
+        if(i==m-1 && j==n-1)return true;
+        return dp[i][j]= ok(mid,dungeon,i+1,j)|| ok(mid,dungeon,i,j+1);
+    }
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        m=dungeon.size();
+        n=dungeon[0].size();
+        int lo=1;
+        int hi=1e8;  //200*200*1000 4*1e7
+        int ans=1;
+        while(lo<=hi){
+            int mid=lo+(hi-lo)/2;
+            dp.assign(m,vector<int>(n,INT_MIN)); //assign not resize will not work
+            if(ok(mid,dungeon,0,0)){
+                ans=mid;
+                hi=mid-1;
+            }else lo=mid+1;
+        }
+        return ans;
+    }
+};
+
+
+
+
+class Solution {
+public:
+    int m;
+    int n;
+    vector<vector<int>>dp; // stores max remaining health seen at (i,j) for current mid
+
+    int solve(vector<vector<int>>& dungeon,int i, int j){
+        if(i>=m || j>=n)return INT_MAX;
+        if(i==m-1 && j==n-1){
+            if(dungeon[i][j]<0)return abs(dungeon[i][j])+1;
+            else return 1;
+        }
+        if(dp[i][j]!=-1)return dp[i][j];
+        int right=solve(dungeon,i,j+1);
+        int down=solve(dungeon,i+1,j);
+        int res=min(down,right)-dungeon[i][j];
+        if(res<=0)res=1;
+        return dp[i][j]=res;
+    }
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        m=dungeon.size();
+        n=dungeon[0].size();
+        dp.resize(m,vector<int>(n,-1));
+        return solve(dungeon,0,0);
+    }
+};
+
+
+
+
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        //min health req to reach m-1 n-1 from i ,j 
+        int m=dungeon.size();
+        int n=dungeon[0].size();
+        vector<vector<int>>dp(m,vector<int>(n,0));
+        for(int i=m-1;i>=0;i--){
+            for(int j=n-1;j>=0;j--){
+                if(i==m-1 && j==n-1){
+                    if(dungeon[i][j]<0)dp[i][j]=abs(dungeon[i][j])+1;
+                    else dp[i][j]=1;
+                }else{
+                    int right=(j+1<n)?dp[i][j+1]:INT_MAX;
+                    int down=(i+1<m)?dp[i+1][j]:INT_MAX;
+                    int res=min(down,right)-dungeon[i][j];
+                    if(res<=0)res=1;
+                    dp[i][j]=res;
+                }
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+
+
+
