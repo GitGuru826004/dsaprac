@@ -1,0 +1,99 @@
+class Solution {
+public:
+    using ll=long long;
+    const int mod=1e9+7;
+    vector<vector<pair<ll,ll>>>dp;
+
+    pair<ll,ll> f(int i,int j,vector<vector<int>>& grid){
+        int m=grid.size(),n=grid[0].size();
+        if(i>=m||j>=n)return {LLONG_MIN,LLONG_MAX};
+        if(i==m-1&&j==n-1)return {grid[i][j],grid[i][j]};
+        if(dp[i][j]!=make_pair(LLONG_MIN,LLONG_MAX))return dp[i][j];
+        ll maxval=LLONG_MIN;
+        ll minval=LLONG_MAX;
+        if(i+1<m){
+            auto[downmax,downmin]=f(i+1,j,grid);
+            maxval=max({maxval,downmax*grid[i][j],downmin*grid[i][j]});
+            minval=min({minval,downmax*grid[i][j],downmin*grid[i][j]});
+        }
+        if(j+1<n){
+            auto[rightmax,rightmin]=f(i,j+1,grid);
+            maxval=max({maxval,rightmax*grid[i][j],rightmin*grid[i][j]});
+            minval=min({minval,rightmax*grid[i][j],rightmin*grid[i][j]});
+        }
+        return dp[i][j]={maxval,minval};
+    }
+    int maxProductPath(vector<vector<int>>& grid) {
+        int m=grid.size(),n=grid[0].size();
+        dp.resize(m,vector<pair<ll,ll>>(n,{LLONG_MIN,LLONG_MAX}));
+        ll pdt= f(0,0,grid).first;
+        return pdt<0?-1:pdt%mod;
+    }
+};
+
+
+
+class Solution {
+public:
+    using ll = long long;
+    const int mod = 1e9+7;
+
+    // dp[i][j].first  = maximum product to reach (i,j)
+    // dp[i][j].second = minimum product to reach (i,j)
+
+    int maxProductPath(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<pair<ll,ll>>> dp(
+            m, vector<pair<ll,ll>>(n, {LLONG_MIN, LLONG_MAX})
+        );
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+
+                if (i == 0 && j == 0) {
+                    dp[i][j] = {grid[i][j], grid[i][j]};
+                    continue;
+                }
+
+                ll maxval = LLONG_MIN;
+                ll minval = LLONG_MAX;
+                ll cur = grid[i][j];
+
+                if (i > 0) {
+                    auto [upMax, upMin] = dp[i-1][j];
+                    if (upMax != LLONG_MIN) {
+                        maxval = max(maxval, upMax * cur);
+                        minval = min(minval, upMax * cur);
+                    }
+                    if (upMin != LLONG_MAX) {
+                        maxval = max(maxval, upMin * cur);
+                        minval = min(minval, upMin * cur);
+                    }
+                }
+
+                if (j > 0) {
+                    auto [leftMax, leftMin] = dp[i][j-1];
+                    if (leftMax != LLONG_MIN) {
+                        maxval = max(maxval, leftMax * cur);
+                        minval = min(minval, leftMax * cur);
+                    }
+                    if (leftMin != LLONG_MAX) {
+                        maxval = max(maxval, leftMin * cur);
+                        minval = min(minval, leftMin * cur);
+                    }
+                }
+
+                dp[i][j] = {maxval, minval};
+            }
+        }
+
+        ll pdt = dp[m-1][n-1].first;
+        return pdt < 0 ? -1 : pdt % mod;
+    }
+};
+
+
+
+
+
+
