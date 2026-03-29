@@ -1,0 +1,116 @@
+class Solution {
+public:
+    using ll=long long;
+    void dfs(int node,vector<vector<int>>& adj,vector<int>& vis,ll &cnt){
+        vis[node]=1;
+        cnt++;
+        for(int nbr:adj[node]){
+            if(!vis[nbr])dfs(nbr,adj,vis,cnt);
+        }
+    }
+
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        //If component sizes are:c1, c2, c3, ..., ck , ans=c1*c2 + c1*c3 + ... + ck-1*ck
+        vector<vector<int>>adj(n);
+        for(auto &e:edges){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        vector<int>vis(n,0);
+        vector<ll>sizes;
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                ll cnt=0;
+                dfs(i,adj,vis,cnt);
+                sizes.push_back(cnt);
+            }
+        }
+        ll ans=0,sum=0;
+        for(ll s:sizes){
+            ans+=s*sum;
+            sum+=s;
+        }
+        return ans;
+    }
+};
+
+
+
+class Solution {
+public:
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(n);
+        for(auto &e : edges){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        vector<int> vis(n, 0);
+        vector<long long> sizes;
+        for(int i = 0; i < n; i++){
+            if(!vis[i]){
+                queue<int> q;
+                q.push(i);
+                vis[i] = 1;
+                long long cnt = 0;
+                while(!q.empty()){
+                    int node = q.front(); q.pop();
+                    cnt++;
+                    for(int nbr : adj[node]){
+                        if(!vis[nbr]){
+                            vis[nbr] = 1;
+                            q.push(nbr);
+                        }
+                    }
+                }
+                sizes.push_back(cnt);
+            }
+        }
+        long long ans = 0, sum = 0;
+        for(long long s : sizes){
+            ans += s * sum;
+            sum += s;
+        }
+        return ans;
+    }
+};
+
+
+
+class Solution {
+public:
+    //DSU me har connected component ka ek leader / parent (root) hota hai
+    //find(i) → us node ka ultimate parent (component leader) deta hai
+    vector<int>parent;
+    vector<int>sz;
+
+    int find(int x){
+        if(parent[x]!=x)parent[x]=find(parent[x]);
+        return parent[x]; //path compression
+    }
+
+    void Unite(int x,int y){
+        int x_parent=find(x);
+        int y_parent=find(y);
+        if(x_parent==y_parent)return;
+        if(sz[x_parent]<sz[y_parent])swap(x_parent,y_parent);
+        parent[y_parent]=x_parent;
+        sz[x_parent]+=sz[y_parent];
+    }
+
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        parent.resize(n);
+        sz.resize(n,1);
+        for(int i=0;i<n;i++)parent[i]=i;
+        for(auto &e:edges)Unite(e[0],e[1]);
+        unordered_map<int,long long>mp;
+        for(int i=0;i<n;i++)mp[find(i)]++;
+        long long ans=0,sum=0;
+        for(auto &ss:mp){
+            long long s=ss.second;
+            ans+=s*sum;
+            sum+=s;
+        }
+        return ans;
+    }
+};
+
