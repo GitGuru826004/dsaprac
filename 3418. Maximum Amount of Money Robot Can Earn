@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int m,n;
+    vector<vector<vector<int>>>dp;
+
+    int solve(vector<vector<int>>& coins,int i,int j,int k){
+        if(i>m-1 || j>n-1)return INT_MIN;
+        if(i==m-1 && j==n-1){
+            if(coins[i][j]<0 and k<2)return 0;
+            return coins[i][j];
+        }
+        if(dp[i][j][k]!=INT_MIN)return dp[i][j][k];
+        int take=coins[i][j]+max(solve(coins,i+1,j,k),solve(coins,i,j+1,k));
+        int skip=INT_MIN;
+        if(coins[i][j]<0 && k<2){
+            int skipd=solve(coins,i+1,j,k+1);
+            int skipr=solve(coins,i,j+1,k+1);
+            skip=max(skipd,skipr);
+        }
+        return dp[i][j][k]=max(skip,take);
+    }
+    int maximumAmount(vector<vector<int>>& coins) {
+        m=coins.size();
+        n=coins[0].size();
+        dp.resize(m+1,vector<vector<int>>(n+1,vector<int>(3,INT_MIN)));
+        return solve(coins,0,0,0);
+    }
+};
