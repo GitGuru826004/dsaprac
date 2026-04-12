@@ -1,0 +1,65 @@
+class Solution {
+public:
+    int n;
+    int  getdis(int p1,int p2){
+        int x1=p1/6;
+        int y1=p1%6;
+        int x2=p2/6;
+        int y2=p2%6;
+        return abs(x1-x2)+abs(y1-y2);
+    }
+    int minimumDistance(string word) {
+        n=word.size();
+        vector<int>dp(26,0);//min cost where: one finger is at previous character and other finger is at position x
+        for (int i=1;i<n;i++){
+            vector<int>new_dp(26,INT_MAX);
+            int prev=word[i-1]-'A';
+            int curr=word[i]-'A';
+            for(int x=0;x<26;x++){
+                if(dp[x]==INT_MAX)continue;
+                // Case 1: same finger moves
+                new_dp[x]=min(new_dp[x],dp[x]+getdis(prev,curr));
+                // Case 2: other finger moves
+                new_dp[prev]=min(new_dp[prev],dp[x]+getdis(x,curr));
+            }
+            dp = new_dp;
+        }
+        return *min_element(dp.begin(),dp.end());
+    }
+};
+
+
+class Solution {
+public:
+    vector<vector<vector<int>>>dp;
+    int n;
+
+    int  getdis(int p1,int p2){
+        int x1=p1/6;
+        int y1=p1%6;
+        int x2=p2/6;
+        int y2=p2%6;
+        return abs(x1-x2)+abs(y1-y2);
+    }
+
+    int solve(string &word,int idx,int f1,int f2){
+        if(idx>=n)return 0;
+        if(dp[idx][f1][f2]!=-1)return dp[idx][f1][f2];
+        int curr=word[idx]-'A';
+        if(f1==26 && f2==26)return dp[idx][f1][f2]=solve(word,idx+1,curr,f2); //place f1 on 1st
+        if(f2==26){
+            int f1m=getdis(f1,curr)+solve(word,idx+1,curr,f2);
+            int f2m=solve(word,idx+1,f1,curr);
+            return dp[idx][f1][f2]=min(f1m,f2m);
+        }
+        int f1m=getdis(f1,curr)+solve(word,idx+1,curr,f2);
+        int f2m=getdis(f2,curr)+solve(word,idx+1,f1,curr);
+        return dp[idx][f1][f2]=min(f1m,f2m);
+    }
+    int minimumDistance(string word) {
+        n=word.size();
+        dp.resize(n,vector<vector<int>>(27,vector<int>(27,-1)));
+        return solve(word,0,26,26);
+    }
+};
+
